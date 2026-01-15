@@ -6,10 +6,10 @@ import { GoogleGenAI } from "@google/genai";
  */
 export const getGourmetResponse = async (nickname: string, country: string, feedbackContext: string, day: string): Promise<string> => {
   try {
-    // Correct initialization using process.env.API_KEY as per guidelines.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // Correct initialization using API_KEY from environment variables.
+    const apiKey = (import.meta as any).env?.VITE_API_KEY || (process as any).env?.API_KEY;
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     
-    // Using gemini-3-flash-preview for basic text task as per guidelines.
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `你是一位「國際週社群小編」。
@@ -25,7 +25,6 @@ export const getGourmetResponse = async (nickname: string, country: string, feed
       }
     });
 
-    // Directly access .text property as it is a getter, not a method.
     return response.text || `國際週 ${day} 必吃！${country} 的美味讓我瞬間飛到異國，大家快來！✈️🍴`;
   } catch (error) {
     console.error("Gemini service error:", error);
